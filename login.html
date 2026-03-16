@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - مدارس WE للتكنولوجيا التطبيقية</title>
+    <!-- Google Fonts -->
+    <link href="assets/cairo.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="assets/lucide.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Override auth container for split screen */
+        .auth-container {
+            padding: 0;
+            background: #fff;
+            align-items: stretch;
+            /* fill height */
+        }
+
+        .split-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Right Side: Form */
+        .auth-form-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background-color: #fff;
+        }
+
+        .auth-card-clean {
+            width: 100%;
+            max-width: 450px;
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            padding: 0;
+        }
+
+        .we-community-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .we-community-logo svg {
+            width: 250px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .sign-in-text {
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: right;
+            font-family: 'Changa', sans-serif;
+        }
+
+        /* Left Side: Graphic */
+        .auth-graphic-side {
+            flex: 1;
+            position: relative;
+            background: #f5edfa;
+            /* light purple bg */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .graphic-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .graphic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(81, 46, 95, 0.4) 0%, rgba(125, 60, 152, 0.6) 100%);
+            z-index: 2;
+        }
+
+        /* Decorative Grid */
+        .deco-grid {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-image: radial-gradient(#ccc 2px, transparent 2px);
+            background-size: 20px 20px;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .deco-top-left {
+            top: 0;
+            left: 0;
+        }
+
+        .deco-bottom-right {
+            bottom: 0;
+            right: 0;
+        }
+
+        .auth-graphic-content {
+            position: relative;
+            z-index: 3;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* The glowing shield frame - updated for new design */
+        .shield-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%;
+            /* More rectangular shape */
+            border-radius: 40px 40px 20px 20px;
+            background: #512E5F;
+            /* Dark purple */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .graphic-text {
+            position: absolute;
+            right: -20px;
+            /* Slight overlap */
+            top: 60%;
+            color: white;
+            font-size: 3rem;
+            /* Larger text */
+            font-weight: 800;
+            line-height: 1.1;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: right;
+            pointer-events: none;
+            font-family: 'Changa', sans-serif;
+            background: rgba(255, 255, 255, 0.2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: white;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .we-logos-bottom {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 4;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .we-logos-bottom img {
+            height: 35px;
+        }
+
+        /* Form overrides */
+        .auth-card-clean input {
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            padding: 12px 16px 12px 40px;
+            background: #fff;
+        }
+
+        .auth-card-clean .input-icon i {
+            color: #999;
+        }
+
+        .auth-card-clean .btn-primary {
+            background-color: #6D237D;
+            /* Dark purple */
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .auth-card-clean .btn-primary:hover {
+            background-color: #4a1555;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .remember-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .remember-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-bottom: 0;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .remember-options a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 992px) {
+            .auth-graphic-side {
+                display: none;
+            }
+
+            .auth-form-side {
+                padding: 20px;
+            }
+
+            .split-layout {
+                justify-content: center;
+                background: #f9f9fc;
+            }
+
+            .auth-card-clean {
+                background: white;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            }
+        }
+
+        /* Custom Tabs Style for new design */
+        .tabs {
+            margin-bottom: 30px;
+            background: #f0f0f5;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .tab {
+            color: #555;
+        }
+
+        .tab.active {
+            background: white;
+            color: #6D237D;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Auth View -->
+        <main id="auth-view" class="view auth-container active">
+            <div class="split-layout">
+
+                <!-- Right Side: Form -->
+                <div class="auth-form-side">
+                    <div class="auth-card-clean">
+
+                        <!-- Logo -->
+                        <div class="we-community-logo" style="margin-bottom: 20px;">
+                            <img src="assets/logo-moe.png" alt="وزارة التربية والتعليم والتكنولوجيا التطبيقية" style="max-height: 80px; width: auto;" onerror="this.outerHTML='<h2 style=\'color: var(--primary);\'>تسجيل الدخول</h2>'">
+                        </div>
+
+                        <div class="sign-in-text">تسجيل الدخول</div>
+
+                        <div class="tabs">
+                            <button class="tab active" data-role="student">طالب</button>
+                            <button class="tab" data-role="parent">ولي أمر</button>
+                            <button class="tab" data-role="staff">موظف</button>
+                        </div>
+
+                        <form id="login-form">
+                            <!-- Student Form -->
+                            <div id="student-inputs" class="input-group active">
+                                <div class="input-icon">
+                                    <i data-lucide="user"></i>
+                                    <input type="email" id="student-email" placeholder="Email Address (student@we.edu)">
+                                </div>
+                                <div class="input-icon">
+                                    <i data-lucide="key-round"></i>
+                                    <input type="password" id="student-pass" placeholder="Password">
+                                </div>
+                            </div>
+
+                            <!-- Parent Form -->
+                            <div id="parent-inputs" class="input-group hidden">
+                                <p
+                                    style="text-align: center; color: var(--text-light); margin-bottom: 10px; font-size: 0.9rem;">
+                                    تسجيل الدخول متاح عبر حساب Google لولي الأمر (يجب إدخال بيانات الطالب أولاً للربط)
+                                </p>
+                                <div class="input-icon">
+                                    <i data-lucide="hash"></i>
+                                    <input type="text" id="parent-student-code"
+                                        placeholder="كود الطالب (مثال: 12345678)">
+                                </div>
+                                <div class="input-icon">
+                                    <i data-lucide="credit-card"></i>
+                                    <input type="text" id="parent-national-id" placeholder="الرقم القومي للطالب">
+                                </div>
+                                <div id="google-btn-parent"
+                                    style="margin-top: 10px; display: flex; justify-content: center;">
+                                </div>
+                            </div>
+
+                            <!-- Staff Form -->
+                            <div id="staff-inputs" class="input-group hidden">
+                                <div class="input-icon">
+                                    <i data-lucide="user"></i>
+                                    <input type="email" id="staff-email"
+                                        placeholder="Email Address (staff@.../mai@...)">
+                                </div>
+                                <div class="input-icon">
+                                    <i data-lucide="key-round"></i>
+                                    <input type="password" id="staff-pass" placeholder="Password">
+                                </div>
+                            </div>
+
+                            <!-- Shared Options -->
+                            <div class="remember-options" id="shared-options">
+                                <label>
+                                    <input type="checkbox" style="width: auto; margin:0; padding:0;">
+                                    تذكرني
+                                </label>
+                                <a href="#">هل نسيت كلمة المرور؟</a>
+                            </div>
+
+                            <button type="submit" id="main-login-btn" class="btn-primary" style="margin-top: 20px;">
+                                Log In
+                            </button>
+                        </form>
+
+                        <div class="footer-links">
+                            Terms of Service and Privacy Policy
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left Side: Graphic -->
+                <div class="auth-graphic-side" style="background: #fdfafdfa; border-right: 1px solid #ebebeb;">
+                    <!-- Light dot matrix background -->
+                    <div
+                        style="position:absolute; top:0; left:0; right:0; bottom:0; background-image: radial-gradient(#d3ccd6 1.5px, transparent 1.5px); background-size: 25px 25px; opacity: 0.4;">
+                    </div>
+
+                    <div class="auth-graphic-content"
+                        style="width: 85%; max-width: 450px; background: white; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); overflow: hidden; position: relative;">
+                        <!-- Top Dark Purple Section -->
+                        <div class="shield-frame">
+                            <i data-lucide="graduation-cap"
+                                style="width: 180px; height: 180px; color:rgba(255,255,255,0.2); position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);"></i>
+                        </div>
+
+                        <!-- Bottom White Section -->
+                        <div style="height: 350px; background: transparent; position: relative;">
+                            <div class="graphic-text"
+                                style="position: absolute; bottom: 80px; top: auto; right: -20px; font-size: 4.5rem; transform: none; text-shadow: 0px 10px 20px rgba(0,0,0,0.15); color: white; -webkit-text-stroke: 1px #e0e0e0;">
+                                خـلــق جــيــل<br>
+                                مـــحـــتـــرف
+                            </div>
+                        </div>
+
+                        <!-- Mini Logo Badge Bottom -->
+                        <div
+                            style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #999; padding: 10px 20px; border-radius: 25px; display: flex; align-items: center; gap: 15px; z-index: 5;">
+                            <div
+                                style="color: white; font-weight: bold; font-size: 0.9rem; border-right: 1px solid rgba(255,255,255,0.4); padding-right: 15px; text-align: right; line-height:1.2;">
+                                مدارس WE<br>للتكنولوجيا<br>التطبيقية</div>
+                            <div
+                                style="background: white; color: var(--primary); padding: 5px 12px; border-radius: 15px; font-weight: 900; font-family: sans-serif; font-size: 1.1rem;">
+                                we</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Dashboard View -->
+        <main id="dashboard-view" class="view dashboard-layout hidden">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo sm">WE</div>
+                    <span class="user-role" id="display-role">طالب</span>
+                </div>
+                <nav class="sidebar-nav" id="sidebar-nav">
+                    <!-- Links injected via JS based on role -->
+                </nav>
+
+                <!-- Data Management Section -->
+                <div style="padding: 16px; border-top: 1px solid var(--border); margin-top: auto;">
+                    <p style="font-size: 0.8rem; color: #888; margin-bottom: 8px; font-weight: 600;">إدارة البيانات (بدون نت)</p>
+                    <button onclick="exportDB()" class="nav-item" style="width: 100%; border: none; background: #e8f5e9; color: #2e7d32; margin-bottom: 5px;">
+                        <i data-lucide="download"></i>
+                        حفظ كل البيانات (Backup)
+                    </button>
+                    <button onclick="document.getElementById('import-file').click()" class="nav-item" style="width: 100%; border: none; background: #fff3e0; color: #ef6c00;">
+                        <i data-lucide="upload"></i>
+                        استعادة البيانات (Restore)
+                    </button>
+                    <input type="file" id="import-file" style="display: none;" onchange="importDB(this.files[0])">
+                </div>
+
+                <button id="logout-btn" class="logout-btn">
+                    <i data-lucide="log-out"></i>
+                    تسجيل الخروج
+                </button>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <header class="topbar">
+                    <div class="page-title" id="page-title">الرئيسية</div>
+                    <div class="topbar-actions">
+                        <div class="user-profile">
+                            <span id="display-name" style="font-weight: 700; color: var(--text); font-size: 1.1rem;">مستخدم</span>
+                            <div class="avatar" style="width: 45px; height: 45px; background: #6D237D; flex-shrink: 0; box-shadow: 0 4px 10px rgba(109,35,125,0.2);">
+                                <i data-lucide="user" style="color: white; width: 22px; height: 22px;"></i>
+                            </div>
+                        </div>
+                        <button class="icon-btn notification-btn" style="color: #666;">
+                            <i data-lucide="bell" style="width: 24px; height: 24px; stroke-width: 2;"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="content-area" id="content-area">
+                    <!-- Content injected via JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker for Offline access
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

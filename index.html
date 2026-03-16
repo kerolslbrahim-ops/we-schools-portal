@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدارس WE للتكنولوجيا التطبيقية</title>
+    <!-- Google Fonts -->
+    <link href="assets/cairo.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="assets/lucide.min.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+    <style>
+        :root {
+            --primary: #6d237d; /* WE Purple */
+            --primary-light: #8e30a3;
+            --secondary: #007ba7;
+            --dark: #2a1a2c;
+            --light: #f9f9fc;
+            --border: #e0e0e0;
+            --text-gray: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Changa', 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-area svg { width: auto; height: 50px; fill: var(--primary); }
+        .logo-text { font-size: 1.4rem; font-weight: 800; color: var(--primary); line-height: 1.1;}
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s;
+            padding: 8px 0;
+        }
+        .nav-links li a.active, .nav-links li a:hover {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .login-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover { background: var(--dark); }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+            background: var(--dark); /* Fallback */
+            overflow: hidden;
+        }
+
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top:0; left:0; right:0; bottom:0;
+            background: linear-gradient(to bottom, rgba(42, 26, 44, 0.8), rgba(109, 35, 125, 0.6));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero h2 { font-size: 1.8rem; font-weight: 400; margin-bottom: 10px; color: #f0c9ff; }
+        .hero h1 { font-size: 3.5rem; font-weight: 700; margin-bottom: 25px; line-height: 1.3; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; color: #eee; }
+
+        .btn-main { background: var(--primary); color: white; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 15px rgba(109, 35, 125, 0.5); display: inline-block; border: 2px solid var(--primary);}
+        .btn-main:hover { background: transparent; }
+
+        .custom-shape-divider-bottom { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; line-height: 0; transform: rotate(180deg); z-index: 2;}
+        .custom-shape-divider-bottom svg { position: relative; display: block; width: calc(100% + 1.3px); height: 70px;}
+        .custom-shape-divider-bottom .shape-fill { fill: var(--light); }
+
+        /* ===== General Section Styles ===== */
+        section { padding: 80px 20px; }
+        .bg-light { background-color: var(--light); }
+        .bg-white { background-color: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .sec-title-centered { text-align: center; margin-bottom: 50px; }
+        .sec-title-centered h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; font-weight: 700;}
+        .sec-title-centered p { font-size: 1.1rem; color: var(--text-gray); max-width: 700px; margin: 0 auto; line-height: 1.6;}
+
+        /* ===== Specialities (التخصصات) ===== */
+        .specialities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .spec-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        .spec-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(109,35,125,0.1); border-color: var(--primary-light);}
+        .spec-icon {
+            color: var(--primary);
+            margin-bottom: 25px;
+            display: flex; justify-content: center;
+        }
+        .spec-card h3 { font-size: 1.6rem; color: var(--primary); margin-bottom: 15px; font-weight: 700;}
+        .spec-card p { font-size: 1rem; color: var(--text-gray); line-height: 1.8; margin-bottom: 25px; min-height: 80px;}
+        .read-more { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 1rem;}
+        .read-more:hover { color: var(--dark); }
+
+        /* ===== Certificates (الشهادات - Timeline) ===== */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        .timeline::after {
+            content: ''; position: absolute; width: 4px; background-color: var(--primary);
+            top: 0; bottom: 0; left: 50%; margin-left: -2px; border-radius: 2px;
+        }
+        .tl-item {
+            padding: 10px 40px; position: relative; width: 50%; margin-bottom: 30px;
+        }
+        .tl-item:nth-child(odd) { left: 50%; } /* Right side */
+        .tl-item:nth-child(even) { left: 0%; text-align: left; } /* Left side */
+        
+        .tl-item::after {
+            content: ''; position: absolute; width: 20px; height: 20px; right: -10px; background-color: white; border: 4px solid var(--primary); top: 15px; border-radius: 50%; z-index: 1;
+        }
+        .tl-item:nth-child(even)::after { left: -10px; right: auto; }
+        
+        .tl-item:nth-child(odd) .tl-content::before {
+            content: " "; height: 0; position: absolute; top: 18px; width: 0; z-index: 1; right: -10px; border: medium solid white; border-width: 10px 0 10px 10px; border-color: transparent transparent transparent var(--border);
+        }
+        .tl-item:nth-child(even) .tl-content::before {
+            content: " "; height: 0; position: absolute; top: 18px; width: 0; z-index: 1; left: -10px; border: medium solid white; border-width: 10px 10px 10px 0; border-color: transparent var(--border) transparent transparent;
+        }
+
+        .tl-content {
+            padding: 25px;
+            background-color: white;
+            position: relative;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            text-align: right;
+        }
+        .tl-content h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        .tl-content p { color: var(--text-gray); line-height: 1.6; font-size: 0.95rem;}
+
+
+        /* ===== Future Section (ما بعد التخرج) ===== */
+        .future-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .future-card {
+            background: white; border-radius: 12px; padding: 35px 25px; text-align: center; border: 1px solid var(--border);
+        }
+        .future-icon { margin-bottom: 20px; color: var(--primary); display: flex; justify-content: center;}
+        .future-card h3 { font-size: 1.3rem; color: var(--primary); margin-bottom: 15px; font-weight: 700;}
+        .future-card p { font-size: 0.95rem; color: var(--text-gray); line-height: 1.7;}
+
+        /* ===== Ready To Work Banner ===== */
+        .ready-banner {
+            background: var(--primary);
+            border-radius: 20px;
+            display: flex; flex-wrap: wrap; overflow: hidden; align-items: center;
+            box-shadow: 0 20px 40px rgba(109,35,125,0.2);
+            margin: 40px auto;
+        }
+        .ready-img { 
+            flex: 1; min-width: 300px;
+            position: relative;
+            padding: 30px;
+        }
+        .ready-img img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .ready-text {
+            flex: 1.5; min-width: 300px; padding: 50px; color: white;
+        }
+        .ready-text h3 { font-size: 1.2rem; color: #f0c9ff; margin-bottom: 5px; font-weight: 400;}
+        .ready-text h2 { font-size: 2.2rem; margin-bottom: 20px; font-weight: 700; line-height: 1.3;}
+        .ready-text p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px; color: rgba(255,255,255,0.9);}
+        .btn-white {
+            background: white; color: var(--primary); padding: 12px 30px; border-radius: 8px; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;
+        }
+        .btn-white:hover { background: #f0f0f0; transform: translateY(-2px); }
+
+        /* ===== Footer ===== */
+        footer { background: var(--dark); color: white; text-align: center; padding: 30px 20px; border-top: 5px solid var(--primary);}
+        
+        /* Floating Up Button */
+        .scroll-top { position: fixed; bottom: 20px; left: 20px; background: var(--primary); color: white; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100;}
+        .scroll-top:hover { background: var(--dark); }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .timeline::after { left: 31px; }
+            .tl-item { width: 100%; padding-left: 70px; padding-right: 25px; left: 0 !important; text-align: right !important;}
+            .tl-item::after { left: 21px !important; right: auto !important; }
+            .tl-content::before { display: none; }
+            .ready-banner { flex-direction: column; }
+            .ready-text { padding: 30px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo-area">
+            <img src="assets/logo-moe.png" alt="وزارة التربية والتعليم والتكنولوجيا التطبيقية" style="max-height: 55px; width: auto;" onerror="this.outerHTML='<div class=\'logo-text\'>مدارس WE<br><span style=\'font-size: 0.8rem; font-weight: 400; color:var(--text-gray);\'>للتكنولوجيا التطبيقية</span></div>'">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">الرئيسية</a></li>
+            <li><a href="#about">من نحن</a></li>
+            <li><a href="#specialities">التخصصات</a></li>
+            <li><a href="#admission">شروط التقديم</a></li>
+            <li><a href="#contact">المزيد</a></li>
+        </ul>
+        <a href="login.html" class="login-btn">
+            تسجيل الدخول
+            <i data-lucide="log-in" style="width: 18px;"></i>
+        </a>
+    </nav>
+
+    <section class="hero">
+        <img src="assets/pattern.png" class="video-bg" onerror="this.src=''; this.style.background='#2a1a2c'">
+        
+        <div class="hero-content">
+            <h2>تكنولوجيا عالمية بأيادي شباب مصرية</h2>
+            <h1>مدارس WE للتكنولوجيا التطبيقية</h1>
+            <p>نقدم نموذجًا تعليميًا فريدًا يجمع بين المعرفة الأكاديمية والتدريب العملي، لإعداد فنيين متخصصين في البرمجة، والاتصالات، والشبكات، بشهادات معتمدة وفرص مستقبلية واعدة.</p>
+            <a href="login.html" class="btn-main">الدخول للبوابة الإلكترونية</a>
+        </div>
+
+        <div class="custom-shape-divider-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ===== Specialities Section ===== -->
+    <section id="specialities" class="bg-light">
+        <div class="container">
+            <div class="specialities-grid">
+                <!-- Networks -->
+                <div class="spec-card">
+                    <div class="spec-icon"><i data-lucide="shield" style="width:60px; height:60px; stroke-width: 1.5;"></i></div>
+                    <h3>تخصص شبكات</h3>
+                    <p>في المسار اللي بيأهلك لإدارة الشبكات بكفاءة، وإعداد وصيانة البنية التحتية الرقمية، وكمان حماية المعلومات وتأمين الأنظمة، مع إمكانية الحصول على شهادات مهنية معتمدة.</p>
+                    <a href="#" class="read-more"><i data-lucide="external-link" style="width: 16px;"></i> إعرف أكتر</a>
+                </div>
+                <!-- Telecom -->
+                <div class="spec-card">
+                    <div class="spec-icon"><i data-lucide="radio" style="width:60px; height:60px; stroke-width: 1.5;"></i></div>
+                    <h3>تخصص اتصالات</h3>
+                    <p>هتتعمق في فهم أساسيات أنظمة الاتصالات، وتشغيل الشبكات السلكية واللاسلكية، وهتكتسب خبرة عملية في تقنيات نقل البيانات، وكل ده تحت إشراف متخصصين من المجال.</p>
+                    <a href="#" class="read-more"><i data-lucide="external-link" style="width: 16px;"></i> إعرف أكتر</a>
+                </div>
+                <!-- Software -->
+                <div class="spec-card">
+                    <div class="spec-icon"><i data-lucide="code-2" style="width:60px; height:60px; stroke-width: 1.5;"></i></div>
+                    <h3>تخصص برمجيات</h3>
+                    <p>في المسار ده هتتعلم لغات البرمجة الحديثة، وتكتسب مهارات تطوير البرمجيات، وتصميم التطبيقات والمواقع، بالإضافة إلى التدريب العملي على مشاريع حقيقية بتجهزك لسوق العمل.</p>
+                    <a href="#" class="read-more"><i data-lucide="external-link" style="width: 16px;"></i> إعرف أكتر</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Certificates (Timeline) Section ===== -->
+    <section id="certificates" class="bg-white">
+        <div class="container">
+            <div class="sec-title-centered">
+                <h2>الشهادات</h2>
+                <p>يحصل طالب WE على شهادات معتمدة تجمع بين الدراسة الأكاديمية، التدريب العملي، والخبرة التخصصية، ليكون مؤهلاً لسوق العمل بكفاءة.</p>
+            </div>
+
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-content">
+                        <h3>1. شهادة إتمام الدراسة للدبلوم <i data-lucide="check-circle-2" style="margin-right:auto; color:var(--primary); width:20px;"></i></h3>
+                        <p>شهادة رسمية معتمدة من وزارة التربية والتعليم والتعليم الفني، تثبت اجتياز الطالب للبرنامج الدراسي بالكامل في تخصصه داخل مدرسة WE.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-content">
+                        <h3>2. شهادة أكاديمية دولية <i data-lucide="check-circle-2" style="margin-right:auto; color:var(--primary); width:20px;"></i></h3>
+                        <p>شهادة دولية تؤكد مستوى الطالب الأكاديمي في مجال الاتصالات وتكنولوجيا المعلومات، وتُعد بمثابة اعتراف عالمي بكفاءته العلمية.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-content">
+                        <h3>3. شهادة خبرة مهنية من المصرية للاتصالات <i data-lucide="check-circle-2" style="margin-right:auto; color:var(--primary); width:20px;"></i></h3>
+                        <p>شهادة تؤكد حصول الطالب على تدريب عملي فعلي داخل منشآت الشركة، وتوضح مهاراته الميدانية وتجاربه الواقعية في بيئة العمل.</p>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-content">
+                        <h3>4. شهادات مهنية متخصصة في التخصصات التقنية <i data-lucide="check-circle-2" style="margin-right:auto; color:#ccc; width:20px;"></i></h3>
+                        <p>شهادات مهنية من شركات تكنولوجية كبرى (حسب التخصص) تثبت إجادة الطالب لتقنيات برمجية أو شبكية محددة مطلوبة في السوق.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Post Graduation Section ===== -->
+    <section id="future" class="bg-white">
+        <div class="container">
+            <div class="sec-title-centered">
+                <span style="color: var(--primary); font-weight:bold; font-size:1.1rem; display:block; margin-bottom:5px;">فرص ما بعد التخرج</span>
+                <h2 style="font-size: 2.2rem;">مستقبلك يبدأ من مدارس WE</h2>
+                <p>رحلة الطالب في مدارس WE لا تنتهي عند التخرج، بل تبدأ من هناك. بتأهيل تقني، وشهادات معتمدة، وتدريبات ميدانية، يُفتح أمامه الطريق نحو مستقبل مهني وجامعي مميز داخل مصر وخارجها.</p>
+            </div>
+
+            <div class="future-grid">
+                <!-- Card 1 -->
+                <div class="future-card">
+                    <div class="future-icon"><i data-lucide="building-2" style="width:50px; height:50px; stroke-width: 1.5;"></i></div>
+                    <h3>فرصة الالتحاق بالكليات التقنية المتقدمة</h3>
+                    <p>بعد التخرج من مدارس WE، يستطيع الطالب التقديم إلى كليات متخصصة مثل كلية الهندسة، الذكاء الاصطناعي وغيرها، وتكنولوجيا المعلومات، من خلال نظام التنسيق أو المعادلات.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="future-card">
+                    <div class="future-icon"><i data-lucide="briefcase" style="width:50px; height:50px; stroke-width: 1.5;"></i></div>
+                    <h3>الانضمام المباشر إلى سوق العمل</h3>
+                    <p>بفضل المهارات التطبيقية والشهادات المعتمدة التي يكتسبها خلال الدراسة، يكون خريج مدارس WE مؤهلاً للالتحاق مباشرة بسوق العمل في مجالات التقنية والاتصالات داخل شركات محلية أو إقليمية.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="future-card">
+                    <div class="future-icon"><i data-lucide="graduation-cap" style="width:50px; height:50px; stroke-width: 1.5;"></i></div>
+                    <h3>الاستفادة من المنح التعليمية</h3>
+                    <p>تتيح المدرسة للطلاب فرصاً حقيقية للحصول على منح تعليمية داخل مصر أو خارجها، سواء لاستكمال الدراسة الجامعية أو لحضور برامج تدريبية متخصصة، مما يفتح أمامهم آفاقاً أوسع.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Ready To Work Banner ===== -->
+    <section class="bg-light" style="padding-top:40px; padding-bottom: 80px;">
+        <div class="container">
+            <div class="ready-banner">
+                <div class="ready-img">
+                    <!-- Placeholder representing the student working -->
+                    <div style="background: #e0e0e0; height: 350px; border-radius: 15px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        <img src="assets/pattern.png" style="opacity:0.2; position:absolute; width:100%; height:100%; object-fit:cover;" onerror="this.src='';">
+                        <h2 style="position:relative; z-index:2; font-size: 2.2rem; color: var(--primary); font-weight:800; text-align:center; padding: 20px;">جاهزين لسوق العمل؟</h2>
+                        <!-- Decorative grid -->
+                        <svg style="position:absolute; bottom:10px; right:10px; width:100px; height:100px; opacity:0.3; stroke:var(--primary);" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke-width="2"/></pattern></defs><rect width="100" height="100" fill="url(#grid)" /></svg>
+                    </div>
+                </div>
+                <div class="ready-text">
+                    <h3>مهارات حقيقية. تدريب فعلي. فرص واقعية.</h3>
+                    <h2>جاهز لسوق العمل من أول يوم دراسة</h2>
+                    <p>في مدارس WE للتكنولوجيا التطبيقية، لا يُترك الطالب ليتعلم نظرياً فقط بل يُعد من أول يوم ليكون محترفاً جاهزاً لسوق العمل. من خلال التدريب العملي داخل شركات الاتصالات والتكنولوجيا، واكتساب المهارات التقنية والسلوكية، وبالحصول على شهادات مهنية معترف بها...</p>
+                    <a href="#" class="btn-white">معرفة شروط التقديم <i data-lucide="arrow-left" style="width:18px;"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div style="background: white; padding: 15px 30px; border-radius: 12px; display: inline-block; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                <img src="assets/logo-partners.png" alt="شركاء النجاح" style="max-height: 60px; max-width: 100%; object-fit: contain;" onerror="this.style.display='none'">
+            </div>
+            <p>جميع الحقوق محفوظة &copy; 2026 - مدارس WE للتكنولوجيا التطبيقية | وزارة التربية والتعليم</p>
+        </div>
+    </footer>
+
+    <a href="#" class="scroll-top"><i data-lucide="arrow-up"></i></a>
+
+    <script>
+        lucide.createIcons();
+        
+        // Register Service Worker for Offline access
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

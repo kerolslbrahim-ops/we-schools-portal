@@ -1,0 +1,21 @@
+{
+  "name": "WE Schools Portal",
+  "short_name": "WE Portal",
+  "description": "بوابة مدارس WE للتكنولوجيا التطبيقية",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#6D237D",
+  "theme_color": "#6D237D",
+  "icons": [
+    {
+      "src": "assets/logo-moe.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo-moe.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
