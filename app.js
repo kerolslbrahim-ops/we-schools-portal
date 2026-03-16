@@ -1,6 +1,19 @@
 // ═══════════════════════════════════════════════════════════════
-// DATABASE — Persistent via localStorage
+// DATABASE — Persistent via localStorage & Supabase Cloud Sync
 // ═══════════════════════════════════════════════════════════════
+
+// Supabase Configuration - PLACEHOLDERS
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_KEY = 'YOUR_ANON_KEY';
+let supabase = null;
+
+try {
+    if (typeof supabasejs !== 'undefined' && SUPABASE_URL !== 'https://YOUR_PROJECT_ID.supabase.co') {
+        supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+} catch (e) {
+    console.warn('Supabase not initialized:', e);
+}
 
 // Default seed data (used first time only or when reset)
 const DB_DEFAULT = {
@@ -25,19 +38,7 @@ function loadDB() {
     try {
         const saved = localStorage.getItem('weSchoolsDB_v2');
         if (saved) {
-            const parsed = JSON.parse(saved);
-            // Merge: always keep staff/students/parents from saved (includes admin changes)
-            // but ensure required keys exist
-            return {
-                students:      parsed.students      || DB_DEFAULT.students,
-                parents:       parsed.parents       || DB_DEFAULT.parents,
-                staff:         parsed.staff         || DB_DEFAULT.staff,
-                attendance:    parsed.attendance    || DB_DEFAULT.attendance,
-                grades:        parsed.grades        || DB_DEFAULT.grades,
-                behavior:      parsed.behavior      || DB_DEFAULT.behavior,
-                notifications: parsed.notifications || DB_DEFAULT.notifications,
-                exemptions:    parsed.exemptions    || DB_DEFAULT.exemptions
-            };
+            return JSON.parse(saved);
         }
     } catch(e) {
         console.warn('فشل تحميل قاعدة البيانات من localStorage، سيتم استخدام البيانات الافتراضية.', e);
@@ -45,11 +46,39 @@ function loadDB() {
     return JSON.parse(JSON.stringify(DB_DEFAULT)); // Deep clone of defaults
 }
 
-// Save current DB state to localStorage
-function saveDB() {
+// Global function to sync from Cloud on startup
+async function syncFromCloud() {
+    if (!supabase) return;
+    
     try {
-        // Use _rawDB which holds actual plain arrays (not getter/setter object)
-        localStorage.setItem('weSchoolsDB_v2', JSON.stringify({
+        const { data, error } = await supabase
+            .from('we_schools_data')
+            .select('data')
+            .eq('id', 1)
+            .single();
+            
+        if (error) {
+            console.error('Supabase Fetch Error:', error);
+            return;
+        }
+        
+        if (data && data.data) {
+            console.log('✓ Cloud Data Loaded Successfully');
+            // Update local memory and localStorage
+            Object.assign(_rawDB, data.data);
+            localStorage.setItem('weSchoolsDB_v2', JSON.stringify(data.data));
+            // Reload UI if needed
+            if (currentUser) initDashboard();
+        }
+    } catch (e) {
+        console.error('فشل المزامنة من السحابة:', e);
+    }
+}
+
+// Save current DB state to localStorage and Sync with Cloud
+async function saveDB() {
+    try {
+        const dbData = {
             students:      Array.from(_rawDB.students),
             parents:       Array.from(_rawDB.parents),
             staff:         Array.from(_rawDB.staff),
@@ -58,9 +87,22 @@ function saveDB() {
             behavior:      Array.from(_rawDB.behavior),
             notifications: Array.from(_rawDB.notifications),
             exemptions:    Array.from(_rawDB.exemptions)
-        }));
+        };
+        
+        // Save to LocalStorage for offline/speed
+        localStorage.setItem('weSchoolsDB_v2', JSON.stringify(dbData));
+        
+        // Sync to Supabase if configured
+        if (supabase) {
+            const { error } = await supabase
+                .from('we_schools_data')
+                .upsert({ id: 1, data: dbData, updated_at: new Date() });
+            
+            if (error) console.error('Supabase Sync Error:', error);
+            else console.log('✓ Cloud Sync Success');
+        }
     } catch(e) {
-        console.error('فشل حفظ قاعدة البيانات في localStorage:', e);
+        console.error('فشل حفظ قاعدة البيانات:', e);
     }
 }
 
@@ -199,6 +241,25 @@ function decodeJwtResponse(token) {
 }
 
 window.onload = function () {
+    // Sync from Cloud on startup
+    syncFromCloud();
+
+    // Init Sidebar Toggle (Mobile)
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+
+    if (toggleBtn && sidebar && overlay) {
+        toggleBtn.onclick = () => {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        };
+        overlay.onclick = () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        };
+    }
+
     google.accounts.id.initialize({
         client_id: "236793430569-vrh2m36o61bept5bc6l1mp8bkai1epp9.apps.googleusercontent.com", 
         callback: handleGoogleLogin

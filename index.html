@@ -9,7 +9,7 @@
     <link href="assets/cairo.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
-    <script src="assets/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="manifest" href="manifest.json">
     <script>
         if ('serviceWorker' in navigator) {
@@ -281,14 +281,38 @@
         .scroll-top:hover { background: var(--dark); }
 
         @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero h1 { font-size: 2.5rem; }
+            .nav-links { 
+                display: none; 
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-top: 1px solid var(--border);
+            }
+            .nav-links.active { display: flex; }
+            .nav-links li { text-align: center; }
+            .navbar { padding: 10px 20px; }
+            .hero h1 { font-size: 2.2rem; }
             .timeline::after { left: 31px; }
             .tl-item { width: 100%; padding-left: 70px; padding-right: 25px; left: 0 !important; text-align: right !important;}
             .tl-item::after { left: 21px !important; right: auto !important; }
             .tl-content::before { display: none; }
             .ready-banner { flex-direction: column; }
             .ready-text { padding: 30px; }
+            .menu-btn-mobile { display: block !important; }
+        }
+
+        .menu-btn-mobile {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 5px;
         }
     </style>
 </head>
@@ -299,17 +323,22 @@
         <div class="logo-area">
             <img src="assets/logo-moe.png" alt="وزارة التربية والتعليم والتكنولوجيا التطبيقية" style="max-height: 55px; width: auto;" onerror="this.outerHTML='<div class=\'logo-text\'>مدارس WE<br><span style=\'font-size: 0.8rem; font-weight: 400; color:var(--text-gray);\'>للتكنولوجيا التطبيقية</span></div>'">
         </div>
-        <ul class="nav-links">
+        <ul class="nav-links" id="nav-links">
             <li><a href="#" class="active">الرئيسية</a></li>
             <li><a href="#about">من نحن</a></li>
             <li><a href="#specialities">التخصصات</a></li>
             <li><a href="#admission">شروط التقديم</a></li>
             <li><a href="#contact">المزيد</a></li>
         </ul>
-        <a href="login.html" class="login-btn">
-            تسجيل الدخول
-            <i data-lucide="log-in" style="width: 18px;"></i>
-        </a>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="login.html" class="login-btn">
+                تسجيل الدخول
+                <i data-lucide="log-in" style="width: 18px;"></i>
+            </a>
+            <button class="menu-btn-mobile" id="mobile-menu-toggle">
+                <i data-lucide="menu" style="width: 28px; height: 28px;"></i>
+            </button>
+        </div>
     </nav>
 
     <section class="hero">
@@ -464,6 +493,15 @@
     <script>
         lucide.createIcons();
         
+        // Mobile menu toggle
+        const mobToggle = document.getElementById('mobile-menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+        if (mobToggle) {
+            mobToggle.onclick = () => {
+                navLinks.classList.toggle('active');
+            };
+        }
+
         // Register Service Worker for Offline access
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

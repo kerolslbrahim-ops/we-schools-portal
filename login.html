@@ -11,6 +11,7 @@
     <!-- Lucide Icons -->
     <script src="assets/lucide.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -163,6 +164,7 @@
             font-family: 'Changa', sans-serif;
             background: rgba(255, 255, 255, 0.2);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: white;
             filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
         }
@@ -447,7 +449,12 @@
             <!-- Main Content -->
             <div class="main-content">
                 <header class="topbar">
-                    <div class="page-title" id="page-title">الرئيسية</div>
+                    <div style="display: flex; align-items: center;">
+                        <button class="menu-toggle" id="sidebar-toggle">
+                            <i data-lucide="menu"></i>
+                        </button>
+                        <div class="page-title" id="page-title">الرئيسية</div>
+                    </div>
                     <div class="topbar-actions">
                         <div class="user-profile">
                             <span id="display-name" style="font-weight: 700; color: var(--text); font-size: 1.1rem;">مستخدم</span>
@@ -465,6 +472,8 @@
                     <!-- Content injected via JS -->
                 </div>
             </div>
+            <!-- Mobile Sidebar Overlay -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
         </main>
     </div>
 
