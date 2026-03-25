@@ -3,6 +3,8 @@
   "short_name": "WE Portal",
   "description": "بوابة مدارس WE للتكنولوجيا التطبيقية",
   "start_url": "./index.html",
+  "id": "/we-schools-portal/",
+  "orientation": "portrait",
   "display": "standalone",
   "scope": "./",
   "background_color": "#6D237D",
