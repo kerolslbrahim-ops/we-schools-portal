@@ -2,20 +2,37 @@
   "name": "WE Schools Portal",
   "short_name": "WE Portal",
   "description": "بوابة مدارس WE للتكنولوجيا التطبيقية",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
+  "scope": "./",
   "background_color": "#6D237D",
   "theme_color": "#6D237D",
   "icons": [
     {
-      "src": "assets/logo-moe.png",
+      "src": "./assets/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "assets/logo-moe.png",
+      "src": "./assets/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./assets/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "./assets/screenshot-mobile.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ]
 }
