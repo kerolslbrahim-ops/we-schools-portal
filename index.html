@@ -510,6 +510,26 @@
                     .catch(err => console.log('Service Worker Failed', err));
             });
         }
+
+        // PWA Install Prompt Logic
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="download" style="width: 18px; height: 18px;"></i> تثبيت التطبيق';
+            btn.style.cssText = 'position:fixed;bottom:80px;right:20px;z-index:9999;background:var(--primary);color:white;border:none;padding:12px 20px;border-radius:30px;font-family:inherit;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 10px 25px rgba(109,35,125,0.4);transition:all 0.3s ease;';
+            btn.onmouseover = () => btn.style.transform = 'translateY(-3px)';
+            btn.onmouseout = () => btn.style.transform = 'translateY(0)';
+            btn.onclick = async () => {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') btn.remove();
+                deferredPrompt = null;
+            };
+            document.body.appendChild(btn);
+            if(window.lucide) lucide.createIcons();
+        });
     </script>
 </body>
 
