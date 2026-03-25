@@ -6,12 +6,17 @@ const ASSETS = [
   '/style.css',
   '/app.js',
   '/manifest.json',
-  '/assets/logo-moe.png',
-  '/assets/logo-we-community-square.png',
-  '/assets/logo-partners.png',
-  '/assets/icon-user.png',
-  '/assets/icon-pass.png',
-  '/assets/pattern.png'
+  '/assets/cairo.css',
+  '/assets/cairo-0.woff2',
+  '/assets/cairo-1.woff2',
+  '/assets/cairo-2.woff2',
+  '/assets/cairo-3.woff2',
+  '/assets/cairo-4.woff2',
+  '/assets/cairo-5.woff2',
+  '/assets/cairo-6.woff2',
+  '/assets/cairo-7.woff2',
+  '/assets/cairo-8.woff2',
+  '/assets/lucide.min.js'
 ];
 
 // Install Service Worker
